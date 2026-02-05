@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste da API</title>
+</head>
+<body>
+    <h1>Teste Rápido da API</h1>
+    <p>Substitua SEU-SITE-AQUI.vercel.app pela URL do seu site no Vercel</p>
+    
+    <button onclick="testar()">Testar API</button>
+    
+    <div id="resultado"></div>
+    
+    <script>
+        async function testar() {
+            // SUBSTITUA AQUI COM SEU SITE
+            const url = 'https://random-xplorer.vercel.app/api/random-video?category=all';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                document.getElementById('resultado').innerHTML = `
+                    <h2>Resposta da API:</h2>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <br>
+                    <a href="${data.url}" target="_blank">Abrir vídeo</a>
+                `;
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = `
+                    <h2 style="color:red">Erro:</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
