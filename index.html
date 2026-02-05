@@ -251,7 +251,6 @@
     </style>
 </head>
 <body>
-    <!-- Verificação de Idade -->
     <div class="age-verification" id="ageVerification">
         <div class="modal">
             <h2>⚠️ Verificação de Idade</h2>
@@ -263,10 +262,9 @@
         </div>
     </div>
 
-    <!-- Conteúdo Principal -->
     <div class="container">
         <h1>🎲 RandomXplorer</h1>
-        <p class="subtitle">Vídeos completamente aleatórios com IA</p>
+        <p class="subtitle">Vídeos completamente aleatórios</p>
 
         <div class="warning">
             <strong>⚠️ Aviso Legal</strong>
@@ -275,8 +273,8 @@
 
         <div class="stats">
             <p>📊 <strong>Fontes ativas:</strong> 26+ sites diferentes</p>
-            <p>🎬 <strong>Categorias:</strong> Vídeos, Hentai, Legendado, Tudo Misturado</p>
-            <p>🤖 <strong>Sistema:</strong> 100% automático (sem scraping complexo)</p>
+            <p>🎬 <strong>Categorias:</strong> Aleatório, Vídeos, Hentai</p>
+            <p>🤖 <strong>Sistema:</strong> 100% automático</p>
         </div>
 
         <div class="category-grid">
@@ -291,10 +289,6 @@
             <button class="category-btn" onclick="selectCategory('hentai')" data-category="hentai">
                 <span class="emoji">🎨</span>
                 Hentai
-            </button>
-            <button class="category-btn" onclick="selectCategory('legendado')" data-category="legendado">
-                <span class="emoji">📝</span>
-                Legendado
             </button>
         </div>
 
@@ -336,32 +330,26 @@
             }
         };
 
-        // Selecionar categoria
         function selectCategory(category) {
             selectedCategory = category;
             
-            // Remover active de todos
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            // Adicionar active no selecionado
             document.querySelector(`[data-category="${category}"]`).classList.add('active');
         }
 
-        // Buscar vídeo aleatório
         async function getRandomVideo() {
             const btn = document.getElementById('randomBtn');
             const loading = document.getElementById('loading');
             const errorMsg = document.getElementById('errorMessage');
             
-            // Desabilitar botão e mostrar loading
             btn.disabled = true;
             loading.classList.add('active');
             errorMsg.classList.remove('active');
             
             try {
-                // Chamar API serverless
                 const response = await fetch(`/api/random-video.js?category=${selectedCategory}`);
                 
                 if (!response.ok) {
@@ -371,7 +359,6 @@
                 const data = await response.json();
                 
                 if (data.url) {
-                    // Abrir vídeo em nova aba
                     window.open(data.url, '_blank');
                 } else {
                     throw new Error('URL não encontrada');
@@ -381,7 +368,6 @@
                 console.error('Erro:', error);
                 errorMsg.classList.add('active');
             } finally {
-                // Reabilitar botão e esconder loading
                 btn.disabled = false;
                 loading.classList.remove('active');
             }
