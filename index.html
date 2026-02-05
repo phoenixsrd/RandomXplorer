@@ -362,7 +362,7 @@
             
             try {
                 // Chamar API serverless
-                const response = await fetch(`/api/random-video?category=${selectedCategory}`);
+                const response = await fetch(`/api/random-video.js?category=${selectedCategory}`);
                 
                 if (!response.ok) {
                     throw new Error('Erro na API');
