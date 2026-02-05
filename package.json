@@ -1,0 +1,12 @@
+{
+  "name": "random-video-site",
+  "version": "1.0.0",
+  "description": "Site de vídeos aleatórios",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

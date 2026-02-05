@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RandomXplorer - Vídeos Aleatórios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            color: #856404;
+        }
+
+        .warning strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .category-btn {
+            padding: 20px;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .category-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .category-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .category-btn .emoji {
+            display: block;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .main-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .main-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .main-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .main-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .age-verification {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .age-verification .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .age-verification h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .age-verification p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .age-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .age-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .age-btn.yes {
+            background: #28a745;
+            color: white;
+        }
+
+        .age-btn.no {
+            background: #dc3545;
+            color: white;
+        }
+
+        .age-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stats p {
+            color: #666;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Verificação de Idade -->
+    <div class="age-verification" id="ageVerification">
+        <div class="modal">
+            <h2>⚠️ Verificação de Idade</h2>
+            <p>Este site contém links para conteúdo adulto.<br>Você confirma que tem 18 anos ou mais?</p>
+            <div class="age-buttons">
+                <button class="age-btn no" onclick="ageNo()">Não</button>
+                <button class="age-btn yes" onclick="ageYes()">Sim, tenho +18</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="container">
+        <h1>🎲 RandomXplorer</h1>
+        <p class="subtitle">Vídeos completamente aleatórios com IA</p>
+
+        <div class="warning">
+            <strong>⚠️ Aviso Legal</strong>
+            Este site apenas redireciona para conteúdo hospedado em outros sites. Não hospedamos nenhum conteúdo.
+        </div>
+
+        <div class="stats">
+            <p>📊 <strong>Fontes ativas:</strong> 26+ sites diferentes</p>
+            <p>🎬 <strong>Categorias:</strong> Vídeos, Hentai, Legendado, Tudo Misturado</p>
+            <p>🤖 <strong>Sistema:</strong> 100% automático (sem scraping complexo)</p>
+        </div>
+
+        <div class="category-grid">
+            <button class="category-btn active" onclick="selectCategory('all')" data-category="all">
+                <span class="emoji">🎲</span>
+                Aleatório
+            </button>
+            <button class="category-btn" onclick="selectCategory('videos')" data-category="videos">
+                <span class="emoji">🎬</span>
+                Vídeos
+            </button>
+            <button class="category-btn" onclick="selectCategory('hentai')" data-category="hentai">
+                <span class="emoji">🎨</span>
+                Hentai
+            </button>
+            <button class="category-btn" onclick="selectCategory('legendado')" data-category="legendado">
+                <span class="emoji">📝</span>
+                Legendado
+            </button>
+        </div>
+
+        <button class="main-btn" id="randomBtn" onclick="getRandomVideo()">
+            🎯 Surpreenda-me!
+        </button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #667eea;">Buscando vídeo aleatório...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            ❌ Erro ao buscar vídeo. Tente novamente!
+        </div>
+
+        <div class="footer">
+            <p>Todos os vídeos são buscados automaticamente de sites externos.</p>
+            <p>Você deve ter +18 anos para usar este serviço.</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedCategory = 'all';
+
+        // Verificação de idade
+        function ageYes() {
+            localStorage.setItem('ageVerified', 'true');
+            document.getElementById('ageVerification').classList.add('hidden');
+        }
+
+        function ageNo() {
+            window.location.href = 'https://www.google.com';
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem('ageVerified') === 'true') {
+                document.getElementById('ageVerification').classList.add('hidden');
+            }
+        };
+
+        // Selecionar categoria
+        function selectCategory(category) {
+            selectedCategory = category;
+            
+            // Remover active de todos
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Adicionar active no selecionado
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+        }
+
+        // Buscar vídeo aleatório
+        async function getRandomVideo() {
+            const btn = document.getElementById('randomBtn');
+            const loading = document.getElementById('loading');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            // Desabilitar botão e mostrar loading
+            btn.disabled = true;
+            loading.classList.add('active');
+            errorMsg.classList.remove('active');
+            
+            try {
+                // Chamar API serverless
+                const response = await fetch(`/api/random-video?category=${selectedCategory}`);
+                
+                if (!response.ok) {
+                    throw new Error('Erro na API');
+                }
+                
+                const data = await response.json();
+                
+                if (data.url) {
+                    // Abrir vídeo em nova aba
+                    window.open(data.url, '_blank');
+                } else {
+                    throw new Error('URL não encontrada');
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                errorMsg.classList.add('active');
+            } finally {
+                // Reabilitar botão e esconder loading
+                btn.disabled = false;
+                loading.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
